@@ -3,85 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I'm So Sorry</title>
+    <title>Please Forgive Me</title>
     <style>
         body { 
-            font-family: 'Arial', sans-serif; 
-            background-color: #fce4ec; 
+            font-family: 'Georgia', serif; 
+            background-color: #2c3e50; 
+            color: #bdc3c7;
             text-align: center; 
-            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
+            overflow: hidden;
+            transition: background-color 1s;
         }
-        .gif-container { margin: 20px; width: 250px; }
-        img { width: 100%; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        h1 { color: #880e4f; margin-bottom: 30px; }
-        .buttons { 
-            display: flex; 
-            flex-direction: row;
-            align-items: center;
-            justify-content: center; 
-            gap: 20px; 
-            flex-wrap: wrap;
+        /* Gloomy overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 40%, black 150%);
+            pointer-events: none;
         }
-        button { 
-            padding: 15px 25px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            border-radius: 50px; 
-            border: none; 
-            transition: all 0.2s ease-in-out; 
+        .gif-container { margin: 20px; width: 250px; transition: transform 0.3s; }
+        img { width: 100%; border-radius: 15px; filter: grayscale(80%); transition: 0.5s; }
+        
+        h1 { font-style: italic; letter-spacing: 1px; z-index: 1; }
+
+        .buttons { display: flex; align-items: center; justify-content: center; gap: 20px; z-index: 1; }
+        
+        #yesBtn { 
+            background-color: #27ae60; color: white; border: none; 
+            padding: 12px 25px; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 5px #1e8449; transition: all 0.2s;
         }
-        #yesBtn { background-color: #4caf50; color: white; z-index: 100; }
-        #noBtn { background-color: #f44336; color: white; }
-        #message { color: #ad1457; font-weight: bold; margin-top: 20px; height: 24px; }
+        #noBtn { 
+            background-color: #7f8c8d; color: #ecf0f1; border: none;
+            padding: 12px 25px; border-radius: 50px; cursor: pointer;
+        }
+        #message { margin-top: 20px; font-size: 1rem; color: #95a5a6; z-index: 1; }
     </style>
 </head>
 <body>
     <div class="gif-container">
-        <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHByZzZueXN3Y3I5ZzR5eHByZzZueXN3Y3I5ZzR5eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zy7o7Xf6pXp84/giphy.gif" alt="Guilty">
+        <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHByZzZueXN3Y3I5ZzR5eHByZzZueXN3Y3I5ZzR5eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zy7o7Xf6pXp84/giphy.gif">
     </div>
 
-    <h1 id="question">Please forgive me? 🥺</h1>
+    <h1>The world is grey without you... 🥺</h1>
     
     <div class="buttons">
-        <button id="yesBtn" onclick="location.href='success.html'">Yes, I forgive you ❤️</button>
-        <button id="noBtn" onclick="handleNoClick()">No 😡</button>
+        <button id="yesBtn" onclick="location.href='success.html'">Yes, I forgive you</button>
+        <button id="noBtn" onclick="handleNoClick()">No</button>
     </div>
 
     <p id="message"></p>
 
     <script>
         let yesSize = 18;
-        let paddingVar = 15;
-        
-        const sadMessages = [
-            "Are you sure? 💔",
-            "Please reconsider... 🥺",
-            "Don't do this to me! 😭",
-            "I'll be the best boyfriend ever! 🌹",
-            "Just one more chance? 🙏"
-        ];
-
         function handleNoClick() {
-            // 1. Make Yes button bigger
-            yesSize += 25; 
-            paddingVar += 10;
+            yesSize += 35; 
             const yesBtn = document.getElementById('yesBtn');
+            const img = document.querySelector('img');
             yesBtn.style.fontSize = yesSize + 'px';
-            yesBtn.style.padding = paddingVar + 'px ' + (paddingVar * 1.5) + 'px';
-
-            // 2. Change the GIF to a sad one
+            // As Yes grows, color starts to return
+            img.style.filter = `grayscale(${Math.max(0, 80 - (yesSize/2))}%)`;
             document.getElementById('mainGif').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmNodmtuMXB4bmNodmtuMXB4bmNodmtuMXB4bmNodmtuMXB4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/qUIm5wu6LAAog/giphy.gif";
-
-            // 3. Change the message
-            const randomMsg = sadMessages[Math.floor(Math.random() * sadMessages.length)];
-            document.getElementById('message').innerText = randomMsg;
+            document.getElementById('message').innerText = "Please... look how big the 'Yes' is getting!";
         }
     </script>
 </body>
