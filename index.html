@@ -7,7 +7,7 @@
     <style>
         body { 
             font-family: 'Georgia', serif; 
-            background-color: #2c3e50; 
+            background-color: #1a1a1a; 
             color: #bdc3c7;
             text-align: center; 
             display: flex;
@@ -17,61 +17,140 @@
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
-            transition: background-color 1s;
+            transition: background-color 0.8s ease, color 0.8s ease;
+            position: relative;
         }
-        /* Gloomy overlay */
+
+        /* The Vignette Shadow */
         body::before {
             content: "";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, black 150%);
+            background: radial-gradient(circle, transparent 30%, black 120%);
             pointer-events: none;
+            z-index: 2;
+            transition: opacity 0.8s;
         }
-        .gif-container { margin: 20px; width: 250px; transition: transform 0.3s; }
-        img { width: 100%; border-radius: 15px; filter: grayscale(80%); transition: 0.5s; }
-        
-        h1 { font-style: italic; letter-spacing: 1px; z-index: 1; }
 
-        .buttons { display: flex; align-items: center; justify-content: center; gap: 20px; z-index: 1; }
+        /* Class to trigger the happy change */
+        body.happy-vibe {
+            background-color: #ffc1e3;
+            color: #ad1457;
+        }
+        body.happy-vibe::before { opacity: 0; }
+
+        .gif-container { margin: 20px; width: 250px; z-index: 3; }
+        img { 
+            width: 100%; 
+            border-radius: 15px; 
+            filter: grayscale(100%); 
+            transition: 0.5s; 
+            border: 2px solid #444;
+        }
+        
+        h1 { font-style: italic; z-index: 3; position: relative; transition: 0.5s; }
+
+        .buttons { display: flex; align-items: center; justify-content: center; gap: 20px; z-index: 4; position: relative; }
         
         #yesBtn { 
             background-color: #27ae60; color: white; border: none; 
             padding: 12px 25px; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 5px #1e8449; transition: all 0.2s;
+            box-shadow: 0 5px #1e8449; transition: transform 0.2s, font-size 0.2s;
         }
+
         #noBtn { 
-            background-color: #7f8c8d; color: #ecf0f1; border: none;
+            background-color: #444; color: #bbb; border: none;
             padding: 12px 25px; border-radius: 50px; cursor: pointer;
         }
-        #message { margin-top: 20px; font-size: 1rem; color: #95a5a6; z-index: 1; }
+
+        #message { margin-top: 20px; font-size: 1rem; color: #7f8c8d; z-index: 3; position: relative; }
+
+        .sad-emoji {
+            position: absolute; bottom: -50px; user-select: none;
+            z-index: 1; opacity: 0.4; animation: floatUp 7s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="emoji-container"></div>
+
     <div class="gif-container">
         <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHByZzZueXN3Y3I5ZzR5eHByZzZueXN3Y3I5ZzR5eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zy7o7Xf6pXp84/giphy.gif">
     </div>
 
-    <h1>The world is grey without you... 🥺</h1>
+    <h1 id="mainTitle">The world is crying without you... 🥺</h1>
     
     <div class="buttons">
-        <button id="yesBtn" onclick="location.href='success.html'">Yes, I forgive you</button>
+        <button id="yesBtn" 
+                onclick="location.href='success.html'" 
+                onmouseover="makeHappy()" 
+                onmouseout="makeSad()">
+            Yes, I forgive you
+        </button>
         <button id="noBtn" onclick="handleNoClick()">No</button>
     </div>
 
-    <p id="message"></p>
+    <p id="message">Tap anywhere to hear my heart...</p>
 
     <script>
         let yesSize = 18;
+        const music = document.getElementById('bgMusic');
+        const body = document.body;
+
+        function createSadEmoji() {
+            if (body.classList.contains('happy-vibe')) return; // Stop emojis if happy
+            const container = document.getElementById('emoji-container');
+            const emoji = document.createElement('div');
+            emoji.classList.add('sad-emoji');
+            const items = ['😢', '😭', '☁️', '💔', '💧'];
+            emoji.innerText = items[Math.floor(Math.random() * items.length)];
+            emoji.style.left = Math.random() * 100 + "vw";
+            emoji.style.fontSize = Math.random() * 20 + 15 + "px";
+            emoji.style.animationDuration = Math.random() * 4 + 4 + "s";
+            container.appendChild(emoji);
+            setTimeout(() => { emoji.remove(); }, 7000);
+        }
+
+        setInterval(createSadEmoji, 500);
+
+        function makeHappy() {
+            body.classList.add('happy-vibe');
+            document.getElementById('mainTitle').innerText = "There's the smile I miss! ✨";
+            document.getElementById('mainTitle').style.fontStyle = "normal";
+        }
+
+        function makeSad() {
+            body.classList.remove('happy-vibe');
+            document.getElementById('mainTitle').innerText = "The world is crying without you... 🥺";
+            document.getElementById('mainTitle').style.fontStyle = "italic";
+        }
+
         function handleNoClick() {
-            yesSize += 35; 
+            music.play();
+            yesSize += 40; 
             const yesBtn = document.getElementById('yesBtn');
             const img = document.querySelector('img');
             yesBtn.style.fontSize = yesSize + 'px';
-            // As Yes grows, color starts to return
-            img.style.filter = `grayscale(${Math.max(0, 80 - (yesSize/2))}%)`;
+            
+            let saturation = Math.min(100, (yesSize - 18) / 2);
+            img.style.filter = `grayscale(${100 - saturation}%)`;
+            
             document.getElementById('mainGif').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmNodmtuMXB4bmNodmtuMXB4bmNodmtuMXB4bmNodmtuMXB4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/qUIm5wu6LAAog/giphy.gif";
-            document.getElementById('message').innerText = "Please... look how big the 'Yes' is getting!";
+            document.getElementById('message').innerText = "I won't give up until you click that big green button!";
         }
+
+        body.addEventListener('click', () => music.play(), { once: true });
     </script>
 </body>
 </html>
