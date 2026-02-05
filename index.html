@@ -5,37 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I'm So Sorry</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background-color: #fce4ec; text-align: center; padding: 50px; }
-        .gif-container { margin: 20px auto; width: 300px; height: 300px; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: #fce4ec; 
+            text-align: center; 
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .gif-container { margin: 20px; width: 250px; }
         img { width: 100%; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        h1 { color: #880e4f; }
-        .buttons { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
-        button { padding: 15px 25px; font-size: 18px; cursor: pointer; border-radius: 50px; border: none; transition: 0.3s; }
-        #yesBtn { background-color: #4caf50; color: white; }
+        h1 { color: #880e4f; margin-bottom: 30px; }
+        .buttons { 
+            display: flex; 
+            flex-direction: row;
+            align-items: center;
+            justify-content: center; 
+            gap: 20px; 
+            flex-wrap: wrap;
+        }
+        button { 
+            padding: 15px 25px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            border-radius: 50px; 
+            border: none; 
+            transition: all 0.2s ease-in-out; 
+        }
+        #yesBtn { background-color: #4caf50; color: white; z-index: 100; }
         #noBtn { background-color: #f44336; color: white; }
+        #message { color: #ad1457; font-weight: bold; margin-top: 20px; height: 24px; }
     </style>
 </head>
 <body>
     <div class="gif-container">
         <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHByZzZueXN3Y3I5ZzR5eHByZzZueXN3Y3I5ZzR5eHByZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zy7o7Xf6pXp84/giphy.gif" alt="Guilty">
     </div>
-    <h1>Please forgive me? I've been a fool... 🥺</h1>
+
+    <h1 id="question">Please forgive me? 🥺</h1>
+    
     <div class="buttons">
         <button id="yesBtn" onclick="location.href='success.html'">Yes, I forgive you ❤️</button>
-        <button id="noBtn" onmouseover="moveButton()">No 😡</button>
+        <button id="noBtn" onclick="handleNoClick()">No 😡</button>
     </div>
 
+    <p id="message"></p>
+
     <script>
-        function moveButton() {
-            const btn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            btn.style.position = 'absolute';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
-            
-            // Change to a "Please reconsider" GIF
+        let yesSize = 18;
+        let paddingVar = 15;
+        
+        const sadMessages = [
+            "Are you sure? 💔",
+            "Please reconsider... 🥺",
+            "Don't do this to me! 😭",
+            "I'll be the best boyfriend ever! 🌹",
+            "Just one more chance? 🙏"
+        ];
+
+        function handleNoClick() {
+            // 1. Make Yes button bigger
+            yesSize += 25; 
+            paddingVar += 10;
+            const yesBtn = document.getElementById('yesBtn');
+            yesBtn.style.fontSize = yesSize + 'px';
+            yesBtn.style.padding = paddingVar + 'px ' + (paddingVar * 1.5) + 'px';
+
+            // 2. Change the GIF to a sad one
             document.getElementById('mainGif').src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmNodmtuMXB4bmNodmtuMXB4bmNodmtuMXB4bmNodmtuMXB4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/qUIm5wu6LAAog/giphy.gif";
+
+            // 3. Change the message
+            const randomMsg = sadMessages[Math.floor(Math.random() * sadMessages.length)];
+            document.getElementById('message').innerText = randomMsg;
         }
     </script>
 </body>
